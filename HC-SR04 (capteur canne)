@@ -1,0 +1,64 @@
+// Définition des broches pour les deux capteurs
+const int trigPin1 = 9;
+const int echoPin1 = 10;
+
+const int trigPin2 = 5;
+const int echoPin2 = 6;
+
+float duration1, distance1;
+float duration2, distance2;
+float finalDistance;
+
+void setup() {
+  pinMode(trigPin1, OUTPUT);
+  pinMode(echoPin1, INPUT);
+  
+  pinMode(trigPin2, OUTPUT);
+  pinMode(echoPin2, INPUT);
+
+  Serial.begin(9600);
+}
+
+void loop() {
+  // Lecture du premier capteur
+  distance1 = getDistance(trigPin1, echoPin1);
+  // Lecture du second capteur
+  distance2 = getDistance(trigPin2, echoPin2);
+  
+  // Gestion de la redondance
+  if (isValid(distance1) && isValid(distance2)) {
+    finalDistance = (distance1 + distance2) / 2.0; // Moyenne des deux capteurs
+  } else if (isValid(distance1)) {
+    finalDistance = distance1; // Seul le capteur 1 est valide
+  } else if (isValid(distance2)) {
+    finalDistance = distance2; // Seul le capteur 2 est valide
+  } else {
+    finalDistance = -1; // Aucune mesure valide
+  }
+
+  // Affichage des résultats
+  Serial.print("Capteur 1: "); Serial.print(distance1); Serial.print(" cm, ");
+  Serial.print("Capteur 2: "); Serial.print(distance2); Serial.print(" cm, ");
+  Serial.print("Distance finale: "); Serial.println(finalDistance);
+
+  delay(100);
+}
+
+// Fonction pour mesurer la distance avec un capteur
+float getDistance(int trigPin, int echoPin) {
+  digitalWrite(trigPin, LOW);
+  delayMicroseconds(2);
+  digitalWrite(trigPin, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(trigPin, LOW);
+
+  float duration = pulseIn(echoPin, HIGH);
+  float distance = (duration * 0.0343) / 2;
+
+  return distance;
+}
+
+// Fonction pour vérifier si une distance est valide
+bool isValid(float distance) {
+  return (distance > 2 && distance < 400); // HC-SR04 fonctionne entre 2 cm et 400 cm
+}
