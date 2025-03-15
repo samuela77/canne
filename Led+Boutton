@@ -1,16 +1,20 @@
-#define LED_PIN 8
-#define BUTTON_PIN 7
+const int Led_Rouge = 8;
+const int Led_Verte = 7;
+const int BUTTON = 2;
 
 void setup() {
-  pinMode(LED_PIN, OUTPUT);
-  pinMode(BUTTON_PIN, INPUT);
+  pinMode(Led_Rouge, OUTPUT);
+pinMode(Led_Verte, OUTPUT);
+  pinMode(BUTTON, INPUT);
 }
 
 void loop() {
-  if (digitalRead(BUTTON_PIN) == HIGH) {
-    digitalWrite(LED_PIN, HIGH);
+  if (digitalRead(BUTTON) == HIGH) {
+    digitalWrite(Led_Verte, HIGH);
+digitalWrite(Led_Rouge, LOW);
   }
   else {
-    digitalWrite(LED_PIN, LOW);
+digitalWrite(Led_Rouge, HIGH);
+    digitalWrite(Led_Verte, LOW);
   }
 }
